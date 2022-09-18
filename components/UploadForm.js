@@ -1,20 +1,70 @@
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
+import { useAppContext } from "../context/AppContext";
+import { useState } from "react";
+import axios from "axios";
 export default function UploadForm() {
+  // const { state, dispatch } = useAppContext();
+  const [dataset, setDataset] = useState("");
+  const [predictColumn, setPredictcolumn] = useState("");
+  const [modelType, setModelType] = useState("");
+  const [modelName, setModelName] = useState("");
+  const [scoring, setScoring] = useState("");
+  const [trainPart, setTrainPart] = useState(0);
+  const [testPart, setTestPart] = useState(0);
+  const [responseReceived, setResponseReceived] = useState(false);
+  const [response, setResponse] = useState({});
+
+  const onDatasetChange = (event) => {
+    event.preventDefault();
+    setDataset(event.target.value);
+  };
+  const onPredictionColumnChange = (event) => {
+    event.preventDefault();
+    setPredictcolumn(event.target.value);
+  };
+  const onModelTypeChange = (event) => {
+    event.preventDefault();
+    setModelType(event.target.value);
+  };
+  const onModelNameChange = (event) => {
+    event.preventDefault();
+    setModelName(event.target.value);
+  };
+  const onScoringChange = (event) => {
+    event.preventDefault();
+    setScoring(event.target.value);
+  };
+  const onTestPartChange = (event) => {
+    event.preventDefault();
+    setTestPart(event.target.value);
+  };
+  const onTrainPartChange = (event) => {
+    event.preventDefault();
+    setTrainPart(event.target.value);
+  };
+  const submitForm = async (event) => {
+    event.preventDefault();
+    const dataToSend = {
+      dataset: dataset,
+      modelName: modelName,
+      modelType: modelType,
+      testPart: testPart,
+      trainPart: trainPart,
+      scoring: scoring,
+      predictColumn: predictColumn,
+      args: {},
+    };
+    await axios
+      .post("http://127.0.0.1:5000/sklearn", dataToSend)
+      .then((res) => {
+        console.log("It works!!!");
+        console.log(res);
+        setResponseReceived(true);
+        setResponse(res);
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+  };
   return (
     <>
       <div className="mx-8">
@@ -43,14 +93,15 @@ export default function UploadForm() {
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
                         <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
-                          http://
+                          https://
                         </span>
                         <input
                           type="text"
                           name="dataset"
                           id="dataset"
-                          className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           placeholder="www.example.com"
+                          onChange={onDatasetChange}
                         />
                       </div>
                     </div>
@@ -68,24 +119,18 @@ export default function UploadForm() {
                           id="predictColumn"
                           name="predictColumn"
                           rows={1}
-                          className="mt-1 block w-full flex-1 rounded-none rounded-r-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          className="mt-1 block w-full flex-1 rounded-none rounded-r-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                           placeholder="Cost"
                           defaultValue={""}
+                          onChange={onPredictionColumnChange}
                         />
                       </div>
                       <p className="mt-2 text-sm text-gray-500">
-                        Write which column of the dataset is the model being trained for. 
+                        Write which column of the dataset is the model being
+                        trained for.
                       </p>
                     </div>
                   </div>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Save
-                  </button>
                 </div>
               </div>
             </form>
@@ -99,15 +144,16 @@ export default function UploadForm() {
         </div>
       </div>
 
-      <div className="mt-10 sm:mt-0">
+      <div className="mx-8 mt-10 sm:mt-0">
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
             <div className="px-4 sm:px-0">
               <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Personal Information
+                Model Specific Information
               </h3>
               <p className="mt-1 text-sm text-gray-600">
-                Use a permanent address where you can receive mail.
+                Please fill in model specific information, for us to build and
+                train your model.
               </p>
             </div>
           </div>
@@ -115,135 +161,127 @@ export default function UploadForm() {
             <form action="#" method="POST">
               <div className="overflow-hidden shadow sm:rounded-md">
                 <div className="bg-white px-4 py-5 sm:p-6">
+                  <fieldset className="pb-8">
+                    <legend className="contents text-base font-medium text-gray-900">
+                      Type of Problem
+                    </legend>
+                    <p className="text-sm text-gray-500">
+                      Choose between Regression and Classification.
+                    </p>
+                    <div className="mt-4 space-y-4">
+                      <div className="flex items-center">
+                        <input
+                          id="Regression"
+                          name="problem"
+                          type="radio"
+                          className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <label
+                          htmlFor="regression"
+                          className="ml-3 block text-sm font-medium text-gray-700"
+                        >
+                          Regression
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          id="classification"
+                          name="problem"
+                          type="radio"
+                          className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <label
+                          htmlFor="classification"
+                          className="ml-3 block text-sm font-medium text-gray-700"
+                        >
+                          Classification
+                        </label>
+                      </div>
+                    </div>
+                  </fieldset>
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        htmlFor="first-name"
+                        htmlFor="model-type"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        First name
+                        Model Type
                       </label>
                       <input
                         type="text"
-                        name="first-name"
-                        id="first-name"
-                        autoComplete="given-name"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        name="model-type"
+                        id="model-type"
+                        autoComplete="linear_model"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        onChange={onModelTypeChange}
                       />
                     </div>
 
                     <div className="col-span-6 sm:col-span-3">
                       <label
-                        htmlFor="last-name"
+                        htmlFor="model-name"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Last name
+                        Model name
                       </label>
                       <input
                         type="text"
-                        name="last-name"
-                        id="last-name"
-                        autoComplete="family-name"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="email-address"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Email address
-                      </label>
-                      <input
-                        type="text"
-                        name="email-address"
-                        id="email-address"
-                        autoComplete="email"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="country"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Country
-                      </label>
-                      <select
-                        id="country"
-                        name="country"
-                        autoComplete="country-name"
-                        className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-                      >
-                        <option>United States</option>
-                        <option>Canada</option>
-                        <option>Mexico</option>
-                      </select>
-                    </div>
-
-                    <div className="col-span-6">
-                      <label
-                        htmlFor="street-address"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Street address
-                      </label>
-                      <input
-                        type="text"
-                        name="street-address"
-                        id="street-address"
-                        autoComplete="street-address"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        name="model-name"
+                        id="model-name"
+                        autoComplete="LinearRegression"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        onChange={onModelNameChange}
                       />
                     </div>
 
                     <div className="col-span-6 sm:col-span-6 lg:col-span-2">
                       <label
-                        htmlFor="city"
+                        htmlFor="test-part"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        City
+                        Test Part
                       </label>
                       <input
                         type="text"
-                        name="city"
-                        id="city"
-                        autoComplete="address-level2"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        name="test-part"
+                        id="test-part"
+                        autoComplete="0.3"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        onChange={onTestPartChange}
                       />
                     </div>
 
                     <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                       <label
-                        htmlFor="region"
+                        htmlFor="train-part"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        State / Province
+                        Train Part
                       </label>
                       <input
                         type="text"
-                        name="region"
-                        id="region"
-                        autoComplete="address-level1"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        name="train-part"
+                        id="train-part"
+                        autoComplete="0.7"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        onChange={onTrainPartChange}
                       />
                     </div>
 
                     <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                       <label
-                        htmlFor="postal-code"
+                        htmlFor="scoring"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        ZIP / Postal code
+                        Scoring Metric
                       </label>
                       <input
                         type="text"
-                        name="postal-code"
-                        id="postal-code"
-                        autoComplete="postal-code"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        name="scoring"
+                        id="scoring"
+                        autoComplete="accuracy"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        onChange={onScoringChange}
                       />
                     </div>
                   </div>
@@ -251,9 +289,10 @@ export default function UploadForm() {
                 <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                   <button
                     type="submit"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    onClick={submitForm}
                   >
-                    Save
+                    Submit
                   </button>
                 </div>
               </div>
@@ -267,165 +306,16 @@ export default function UploadForm() {
           <div className="border-t border-gray-200" />
         </div>
       </div>
-
-      <div className="mt-10 sm:mt-0">
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-lg font-medium leading-6 text-gray-900">
-                Notifications
-              </h3>
-              <p className="mt-1 text-sm text-gray-600">
-                Decide which communications you would like to receive and how.
-              </p>
-            </div>
-          </div>
-          <div className="mt-5 md:col-span-2 md:mt-0">
-            <form action="#" method="POST">
-              <div className="overflow-hidden shadow sm:rounded-md">
-                <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                  <fieldset>
-                    <legend className="sr-only">By Email</legend>
-                    <div
-                      className="text-base font-medium text-gray-900"
-                      aria-hidden="true"
-                    >
-                      By Email
-                    </div>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-start">
-                        <div className="flex h-5 items-center">
-                          <input
-                            id="comments"
-                            name="comments"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label
-                            htmlFor="comments"
-                            className="font-medium text-gray-700"
-                          >
-                            Comments
-                          </label>
-                          <p className="text-gray-500">
-                            Get notified when someones posts a comment on a
-                            posting.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-5 items-center">
-                          <input
-                            id="candidates"
-                            name="candidates"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label
-                            htmlFor="candidates"
-                            className="font-medium text-gray-700"
-                          >
-                            Candidates
-                          </label>
-                          <p className="text-gray-500">
-                            Get notified when a candidate applies for a job.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="flex h-5 items-center">
-                          <input
-                            id="offers"
-                            name="offers"
-                            type="checkbox"
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                          />
-                        </div>
-                        <div className="ml-3 text-sm">
-                          <label
-                            htmlFor="offers"
-                            className="font-medium text-gray-700"
-                          >
-                            Offers
-                          </label>
-                          <p className="text-gray-500">
-                            Get notified when a candidate accepts or rejects an
-                            offer.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                  <fieldset>
-                    <legend className="contents text-base font-medium text-gray-900">
-                      Push Notifications
-                    </legend>
-                    <p className="text-sm text-gray-500">
-                      These are delivered via SMS to your mobile phone.
-                    </p>
-                    <div className="mt-4 space-y-4">
-                      <div className="flex items-center">
-                        <input
-                          id="push-everything"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label
-                          htmlFor="push-everything"
-                          className="ml-3 block text-sm font-medium text-gray-700"
-                        >
-                          Everything
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-email"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label
-                          htmlFor="push-email"
-                          className="ml-3 block text-sm font-medium text-gray-700"
-                        >
-                          Same as email
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          id="push-nothing"
-                          name="push-notifications"
-                          type="radio"
-                          className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <label
-                          htmlFor="push-nothing"
-                          className="ml-3 block text-sm font-medium text-gray-700"
-                        >
-                          No push notifications
-                        </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-                <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
+      {responseReceived && (
+        <div className="flex flex-col items-center p-4">
+            <h1 className="text-xl text-blue-800 font-semibold text-left pb-4">Metrics</h1>
+          <div className="shadow-lg border w-1/3 p-8 flex flex-row justify-center">
+            <h2>
+              <span className="text-blue-500 font-bold">{scoring}: </span>{response.data.scoring}
+            </h2>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

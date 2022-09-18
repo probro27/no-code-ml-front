@@ -3,6 +3,7 @@ export const initialState = {
     modelName: "",
     modelType: "",
     testPart: 0,
+    trainPart: 0,
     scoring: "",
     predictColumn: "",
     args: {}
@@ -50,6 +51,12 @@ export const AppReducer = (state, action) => {
             return {
                 ...state,
                 args: args
+            }
+        }
+        case "set_trainPart": {
+            return {
+                ...state,
+                trainPart: action.trainPart
             }
         }
     }
