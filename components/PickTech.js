@@ -10,7 +10,7 @@ const products = [
     {
       id: 2,
       name: 'TensorFlow',
-      href: '#',
+      href: '/comingsoon',
       price: '$35',
       imageSrc: 'https://www.vectorlogo.zone/logos/tensorflow/tensorflow-ar21.png',
       imageAlt: 'TensorFlow logo',
