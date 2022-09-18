@@ -22,5 +22,35 @@ export const AppReducer = (state, action) => {
                 modelName: action.modelName
             };
         }
+        case "set_modelType": {
+            return {
+                ...state,
+                modelType: action.modelType
+            };
+        }
+        case "set_testPart": {
+            return {
+                ...state,
+                testPart: action.testPart
+            };
+        }
+        case "set_scoring": {
+            return {
+                ...state,
+                scoring: action.scoring
+            };
+        }
+        case "set_predictColumn": {
+            return {
+                ...state,
+                predictColumn: action.predictColumn
+            };
+        }
+        case "set_args": {
+            return {
+                ...state,
+                args: args
+            }
+        }
     }
 }

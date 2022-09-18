@@ -1,6 +1,9 @@
 import React from "react";
+import { useAppContext } from "../context/AppContext"
+
 
 function UploadData() {
+    const { state, dispatch } = useAppContext();
   return (
     <div>
       <div className="px-16 py-16">
