@@ -3,14 +3,14 @@ import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Product', href: '#' },
-  { name: 'Features', href: '#' },
-  { name: 'About Me', href: '#' },
+  { name: 'Product', href: '#home' },
+  { name: 'Features', href: '#features' },
+  { name: 'About Me', href: '#about' },
 ]
 
 export default function Example() {
   return (
-    <div className="relative overflow-hidden bg-white">
+    <div className="relative overflow-hidden bg-white" id="home">
       <div className="mx-auto max-w-7xl">
         <div className="relative z-10 bg-white pb-8 sm:pb-16 md:pb-20 lg:w-full lg:max-w-2xl lg:pb-28 xl:pb-32">
           <svg
@@ -98,7 +98,7 @@ export default function Example() {
                     ))}
                   </div>
                   <a
-                    href="#"
+                    href="#get-started"
                     className="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-blue-600 hover:bg-gray-100"
                   >
                     Start

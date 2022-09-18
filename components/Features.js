@@ -2,43 +2,42 @@ import { BoltIcon, ChatBubbleBottomCenterTextIcon, GlobeAltIcon, ScaleIcon } fro
 
 const features = [
   {
-    name: 'Competitive exchange rates',
+    name: 'Easy to use',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Extremely easy to use. Just need to fill in the model name and enter the dataset. Our app will manage the rest. ',
     icon: GlobeAltIcon,
   },
   {
-    name: 'No hidden fees',
+    name: 'Completely free',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'It is completely free to use at the moment. Train and build no-code ML models free of cost. ',
     icon: ScaleIcon,
   },
   {
-    name: 'Transfers are instant',
+    name: 'Works super fast',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'The results of the application are instant, like you are writing the code yourself, with the comfort of the UI. ',
     icon: BoltIcon,
   },
   {
-    name: 'Mobile notifications',
+    name: 'Provides back metrics',
     description:
-      'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores impedit perferendis suscipit eaque, iste dolor cupiditate blanditiis ratione.',
+      'Gives back the requested metric to the user, for further investigation. ',
     icon: ChatBubbleBottomCenterTextIcon,
   },
 ]
 
 export default function Features() {
   return (
-    <div className="bg-white py-12">
+    <div className="bg-white py-12" id="features">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="lg:text-center">
-          <h2 className="text-lg font-semibold text-indigo-600">Transactions</h2>
+          <h2 className="text-lg font-semibold text-blue-600">Development</h2>
           <p className="mt-2 text-3xl font-bold leading-8 tracking-tight text-gray-900 sm:text-4xl">
-            A better way to send money
+            A better way to build ML models
           </p>
           <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam voluptatum cupiditate veritatis in
-            accusamus quisquam.
+          Make your no-code ML model today!
           </p>
         </div>
 
@@ -47,7 +46,7 @@ export default function Features() {
             {features.map((feature) => (
               <div key={feature.name} className="relative">
                 <dt>
-                  <div className="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white">
+                  <div className="absolute flex h-12 w-12 items-center justify-center rounded-md bg-blue-500 text-white">
                     <feature.icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <p className="ml-16 text-lg font-medium leading-6 text-gray-900">{feature.name}</p>
