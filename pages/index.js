@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import Hero from '../components/Hero.js'
-import Ready from '../components/Ready.js'
-import Features from '../components/Features.js'
-import About from '../components/About.js'
+import Hero from './components/Hero.js'
+import Ready from './components/Ready.js'
+import Features from './components/Features.js'
+import About from './components/About.js'
 
 export default function Home() {
   return (
