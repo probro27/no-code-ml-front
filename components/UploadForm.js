@@ -54,7 +54,7 @@ export default function UploadForm() {
       args: {},
     };
     await axios
-      .post("http://127.0.0.1:5000/sklearn", dataToSend)
+      .post("http://127.0.0.1:8080/sklearn", dataToSend)
       .then((res) => {
         console.log("It works!!!");
         console.log(res);
