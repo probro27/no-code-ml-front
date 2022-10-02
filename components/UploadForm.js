@@ -1,4 +1,4 @@
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext.js";
 import { useState } from "react";
 import axios from "axios";
 export default function UploadForm() {
